@@ -8,9 +8,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Upload to Hugging Face Space
-        uses: huggingface/huggingface_hub/actions/upload-to-space@v1
+        uses: huggingface/hub-action@main
         with:
           repo-token: ${{ secrets.HF_TOKEN }}
-          space-id: garygoh/ai-triage-demo
+          space: garygoh/ai-triage-demo
+  
