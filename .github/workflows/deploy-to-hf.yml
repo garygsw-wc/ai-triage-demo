@@ -1,0 +1,16 @@
+name: Deploy to Hugging Face Space
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Upload to Hugging Face Space
+        uses: huggingface/huggingface_hub/actions/upload-to-space@v1
+        with:
+          repo-token: ${{ secrets.HF_TOKEN }}
+          space-id: garygoh/ai-triage-demo
