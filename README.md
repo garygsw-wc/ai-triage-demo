@@ -1,5 +1,3 @@
-# ai-triage-demo
-
 ---
 title: AI Triage Demo
 emoji: 🩺
