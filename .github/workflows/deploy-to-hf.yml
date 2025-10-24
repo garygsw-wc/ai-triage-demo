@@ -21,6 +21,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           git remote add space https://garygoh:${HF_TOKEN}@huggingface.co/spaces/garygoh/ai-triage-demo
+          git fetch --unshallow origin
           git fetch space
           git push --force space main
 
