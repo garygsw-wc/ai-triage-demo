@@ -16,5 +16,5 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-        git fetch origin
-        git push https://garygoh:${{ env.HF_TOKEN }}@huggingface.co/spaces/garygoh/ai-triage-demo main -- force
+          git fetch origin
+          git push https://garygoh:${{ env.HF_TOKEN }}@huggingface.co/spaces/garygoh/ai-triage-demo main -- force
