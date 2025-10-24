@@ -3,17 +3,16 @@ name: Deploy to Hugging Face Space
 on:
   push:
     branches: [main]
-
+  
 jobs:
-  deploy:
+  sync-to-hub:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Upload to Hugging Face Space
-        uses: huggingface/hub-action@main
+      - uses: actions/checkout@v3
         with:
-          repo-token: ${{ secrets.HF_TOKEN }}
-          space: garygoh/ai-triage-demo
-  
+          fetch-depth: 0
+          lfs: true
+      - name: Push to HF Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: git push https://garygoh:${{ env.HF_TOKEN }}@huggingface.co/spaces/garygoh/ai-triage-demo main
