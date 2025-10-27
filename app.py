@@ -331,7 +331,7 @@ def get_redirect_uri():
     """Get the appropriate redirect URI based on environment"""
     try:
         # Check if we have a custom redirect URI in secrets
-        if "google_oauth" in st.secrets and "redirect_uri" in st.secrets["google_oauth"]:
+        if "redirect_uri" in st.secrets:
             return st.secrets["redirect_uri"]
     except:
         pass
