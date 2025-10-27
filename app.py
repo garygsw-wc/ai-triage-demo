@@ -331,7 +331,7 @@ def get_redirect_uri():
     """Get the appropriate redirect URI based on environment"""
     try:
         # Check if we have a custom redirect URI in secrets
-        if "redirect_uri" in st.secrets:
+        if "redirect_uri" in st.secrets["google_oauth"]:
             return st.secrets["redirect_uri"]
     except:
         pass
@@ -352,47 +352,6 @@ def get_redirect_uri():
     
     # Default fallback
     return "http://localhost:8501/"
-
-def clean_url_for_oauth():
-    """Remove conversation data from URL before OAuth to prevent conflicts"""
-    try:
-        # Save conversation data temporarily
-        conv_data = None
-        if "conv" in st.query_params:
-            conv_data = st.query_params["conv"]
-            # Store in session state temporarily
-            st.session_state._temp_conv_data = conv_data
-            # Remove from URL
-            del st.query_params["conv"]
-        
-        # Remove auth data too if present
-        if "auth" in st.query_params:
-            auth_data = st.query_params["auth"]
-            st.session_state._temp_auth_data = auth_data
-            del st.query_params["auth"]
-            
-        return True
-    except Exception as e:
-        print(f"Error cleaning URL: {e}")
-        return False
-
-def restore_url_params():
-    """Restore conversation data after OAuth flow"""
-    try:
-        # Restore conversation data
-        if hasattr(st.session_state, '_temp_conv_data'):
-            st.query_params["conv"] = st.session_state._temp_conv_data
-            del st.session_state._temp_conv_data
-        
-        # Restore auth data
-        if hasattr(st.session_state, '_temp_auth_data'):
-            st.query_params["auth"] = st.session_state._temp_auth_data
-            del st.session_state._temp_auth_data
-            
-        return True
-    except Exception as e:
-        print(f"Error restoring URL params: {e}")
-        return False
 
 def get_google_oauth_url():
     """Generate Google OAuth URL for authentication"""
@@ -484,20 +443,15 @@ def render_google_signin_button():
                 
                 # Clear the code from URL
                 del st.query_params["code"]
-
-                # Restore conversation data if it was saved
-                restore_url_params()
                 
                 st.success("✅ Login successful!")
                 st.rerun()
             else:
                 st.error("❌ Unauthorized email address.")
                 del st.query_params["code"]
-                restore_url_params()
         else:
             st.error("❌ Failed to get user information.")
             del st.query_params["code"]
-            restore_url_params()
     
     # Check for OAuth error
     if "error" in st.query_params:
