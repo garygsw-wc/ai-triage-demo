@@ -784,7 +784,7 @@ def process_response(response: dict, conversation_id: str, summary=False):
             st.warning("⚠️ DEBUG - No 'custom_outputs' field in API response")
     
         # Automatically generate summary when result is no longer pending
-        result_status = conversation["state"].get("result", "").lower() if "result" in conversation["state"] else ""
+        result_status = (conversation["state"].get("result") or "").lower() if conversation["state"].get("result") is not None else "pending"
         if result_status and result_status != "pending" and not conversation.get("summary"):
             with st.spinner("Auto-generating summary..."):
                 response = call_api("Generate summary for this conversation.", conversation["session_id"], generate_summary=True)
@@ -1179,39 +1179,39 @@ def login_page():
     st.subheader("Login")
     
     # Try Google Sign-In first
-    render_google_signin_button()
+    # render_google_signin_button()
     
     st.markdown("---")
     
-    # # Fallback: Simple email login
-    # st.markdown("### 📧 Or sign in with email")
-    # st.markdown("Enter your authorized email to access the system.")
+    # Fallback: Simple email login
+    st.markdown("### 📧 Sign in with email")
+    st.markdown("Enter your authorized email to access the system.")
     
-    # email = st.text_input("Email Address", placeholder="your.email@example.com")
+    email = st.text_input("Email Address", placeholder="your.email@example.com")
     
-    # if st.button("Continue with Email", use_container_width=True, type="primary"):
-    #     if not email:
-    #         st.error("❌ Please enter an email address.")
-    #     elif not is_valid_email(email):
-    #         st.error("❌ Please enter a valid email address.")
-    #     else:
-    #         # Check if email is authorized
-    #         authorized_emails = st.secrets.get("AUTHORIZED_EMAILS", "").split(",")
-    #         if is_email_authorized(email, authorized_emails):
-    #             # Generate auth token
-    #             auth_token = generate_auth_token(email)
+    if st.button("Continue with Email", use_container_width=True, type="primary"):
+        if not email:
+            st.error("❌ Please enter an email address.")
+        elif not is_valid_email(email):
+            st.error("❌ Please enter a valid email address.")
+        else:
+            # Check if email is authorized
+            authorized_emails = st.secrets.get("AUTHORIZED_EMAILS", "").split(",")
+            if is_email_authorized(email, authorized_emails):
+                # Generate auth token
+                auth_token = generate_auth_token(email)
                 
-    #             # Save to storage
-    #             save_auth_to_storage(email, auth_token)
+                # Save to storage
+                save_auth_to_storage(email, auth_token)
                 
-    #             # Set session state
-    #             st.session_state.authenticated = True
-    #             st.session_state.user_email = email
+                # Set session state
+                st.session_state.authenticated = True
+                st.session_state.user_email = email
                 
-    #             st.success("✅ Login successful!")
-    #             st.rerun()
-    #         else:
-    #             st.error("❌ Unauthorized email address or domain.")
+                st.success("✅ Login successful!")
+                st.rerun()
+            else:
+                st.error("❌ Unauthorized email address or domain.")
 
 def main():
     """Main application entry point"""
