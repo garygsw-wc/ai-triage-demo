@@ -1176,9 +1176,9 @@ def main_app():
 def login_page():
     """Login page with Google Sign-In"""
     st.title("🏥 AI Triage Demo")
-    st.subheader("Login")
     
     # Try Google Sign-In first
+    # st.subheader("Login")
     # render_google_signin_button()
     
     st.markdown("---")
